@@ -1,4 +1,5 @@
 const database = require('../models')
+const bcryptjs = require('bcryptjs')
 
 class ClienteController {
     static async verificarClientes(req, res) {
@@ -26,10 +27,12 @@ class ClienteController {
     }
 
     static async cadastrarCliente(req, res) {
-        const novoCliente = req.body
+        const {CPF, nome, email, endereco, senha} = req.body
 
         try {
-            const clienteCriado = await database.Clientes.create(novoCliente)
+            const senhaHash = await bcryptjs.hash(senha, 12)
+            const clienteCriado = await database.Clientes.create({CPF, nome, 
+                email, endereco, senha: senhaHash})
             return res.status(200).json(clienteCriado)
         } catch (error) {
             return res.status(500).json(error.message)
@@ -37,7 +40,7 @@ class ClienteController {
     }
 
     static async atualizaCliente(req, res) {
-        const { id } = req.params
+        const { id } = req.user
         const novasInformacoes = req.body
 
         try {

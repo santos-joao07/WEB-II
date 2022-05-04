@@ -42,7 +42,7 @@ class DistribuidorController {
     }
 
     static async atualizaDistribuidor(req, res) {
-        const { id } = req.params
+        const { id } = req.user
         const novasInformacoes = req.body
 
         try {
